@@ -1,0 +1,2665 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" type="text/css"
+	href="../../static/css/bootstrap.min.css" />
+<link rel="stylesheet" type="text/css"
+	href="../../static/css/custom/myLoginStyle.css" />
+</head>
+<body>
+
+	<!-- Debut Personal Data -->
+	<div class="col-xs-12 col-sm-6 col-md-3 col-lg-3"
+		th:fragment="personalData (salarie)">
+		<div class="panel panel-default"
+			style="box-shadow: 1px 2px 50px rgba(0, 0, 0, 0.05);">
+			<div class="table-responsive">
+				<table class="table table-striped">
+					<thead class="panel-heading">
+						<tr>
+							<th colspan="2" class="text-center">Informations
+								personnelles</th>
+						</tr>
+					</thead>
+					<tbody class="panel-body" th:object="${salarie}">
+						<tr>
+							<td>Nom</td>
+							<td th:text="*{nom}"></td>
+						</tr>
+						<tr>
+							<td>Prenom</td>
+							<td th:text="*{prenom}"></td>
+						</tr>
+						<tr>
+							<td>Sexe</td>
+							<td th:text="*{sexe}">*{}</td>
+						</tr>
+						<tr>
+							<td>Date de naissance</td>
+							<td th:text="*{dateNaissance}">*{}</td>
+						</tr>
+						<tr>
+							<td>Adresse</td>
+							<td th:text="*{adresse}">*{}</td>
+						</tr>
+						<tr>
+							<td>Numéro sécu</td>
+							<td th:text="*{numeroSecuriteSociale}">*{}</td>
+						</tr>
+						<tr>
+							<td>Poste</td>
+							<td th:text="*{poste}">*{}</td>
+						</tr>
+						<tr>
+							<td>Grade</td>
+							<td th:text="*{type}">*{}</td>
+						</tr>
+						<tr>
+							<td>Salaire</td>
+							<td th:text="*{salaire}">*{}</td>
+						</tr>
+						<tr>
+							<td>Date d'embauche</td>
+							<td th:text="*{dateEmbauche}">*{}</td>
+						</tr>
+						<tr>
+							<td>Numero Tél</td>
+							<td th:text="*{numeroTel}">*{}</td>
+						</tr>
+						<tr>
+							<td>Email</td>
+							<td th:text="*{login}">*{}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<!-- Fin Personal Data -->
+
+	<!-- Debut Archive Note De Frais Salarie -->
+	<div class="col-xs-12 col-sm-6 col-md-3 col-lg-3"
+		th:fragment="archiveNotesData (notesArchive)">
+		<div class="panel panel-default"
+			style="box-shadow: 1px 2px 50px rgba(0, 0, 0, 0.05);">
+			<div class="table-responsive">
+				<table class="table table-striped">
+					<thead class="panel-heading">
+						<tr>
+							<th colspan="4" class="text-center">Achive de note de frais</th>
+						</tr>
+						<tr>
+							<th class="text-center">Type</th>
+							<th class="text-center">Date</th>
+							<th class="text-center">Etat</th>
+							<th class="text-center">Actions</th>
+						</tr>
+					</thead>
+					<tbody class="panel-body">
+						<tr th:each="noteArchive : ${notesArchive}">
+							<!-- <td><img th:src="@{${noteArchive.getImgURL(noteArchive.id)}}"/><span style="margin-left: 8px;" th:text="${noteArchive.class.simpleName}"></span></td> -->
+							<td class="text-center"><img
+								th:src="@{${noteArchive.getImgURL(noteArchive.id)}}" /></td>
+							<td class="text-center" th:text="${noteArchive.dateDemandeRemboursement}"></td>
+							<td class="text-center" th:text="${noteArchive.etat}"></td>
+							<td><a href="@{NotedeFrais(id=${s.id})}"
+								class="btn btn-info"
+								th:attr="data-toggle='modal', data-target='#myArchiveModal'+${noteArchive.id}">Details</a></td>
+						</tr>
+						<tr th:if="${notesPasEncoreValide.size() != 0}">
+							<td colspan="4">
+								<ul class="nav nav-pills">
+									<li th:each="pArchive:${pagesArchive}"
+										th:class="${pArchive==pageCouranteArchive}?active:''"><a
+										th:text="${pArchive}"
+										th:href="@{Home(pageArchive=${pArchive}, pagePasEncoreValide=${pageCourantePasEncoreValide})}"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr th:if="${notesArchive.size() == 0}">
+							<td colspan="6" class="text-center"> Pas de notes en archives !</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- Modal notesArchive -->
+		<div th:each="noteArchive : ${notesArchive}" class="modal fade"
+			th:id="'myArchiveModal'+${noteArchive.id}" role="dialog">
+			<div class="modal-dialog">
+
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Note de Frais Details</h4>
+					</div>
+					<div class="modal-body">
+						
+						
+						<!-- FraisHebergement -->
+						<div class="row"
+							th:if="${noteArchive.class.simpleName=='FraisHebergement'}">
+							<div
+								class="col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-4 col-md-offset-0 col-md-4">
+								<img class="img-responsive" th:src="@{/img/hotel512.png}" />
+							</div>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="3" class="text-center">Informations</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body">
+												<tr>
+													<td th:text="'Date de création'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.dateDemandeRemboursement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Etat'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.etat}"></td>
+												</tr>
+												
+												<!-- Partie FraisHebergement -->
+												<tr>
+													<td th:text="'Hotel'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.nomHotel} + ' ' + ${noteArchive.nombreEtoiles} + '*'"></td>
+												</tr>
+												<tr>
+													<td th:text="'Adresse'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.adresse}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Date de reservation'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.dateHebergement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Nombre de nuits'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.nombreDeNuitOuJour}"></td>
+												</tr>
+												
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="panel-group col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" th:href="'#justifArchive'+${noteArchive.id}" >Justificatif</a>
+							        </h4>
+							      </div>
+							      <div th:id="'justifArchive'+${noteArchive.id}" class="panel-collapse collapse">
+							        <div class="panel-body" style="overflow-y: scroll; height: 300px">
+							        	<div  class="col-xs-12 col-sm-12 col-md-12">
+											<img class="img-responsive" th:src="@{getJustif(id=${noteArchive.id})}" />
+										</div>
+							        </div>
+							      </div>
+							    </div>
+							  </div>
+						</div>
+
+						<!-- FraisDejeunerAffaire -->
+						<div class="row"
+							th:if="${noteArchive.class.simpleName=='FraisDejeunerAffaire'}">
+							<div
+								class="col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-4 col-md-offset-0 col-md-4">
+								<img class="img-responsive" th:src="@{/img/restaurant512.png}" />
+							</div>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="2" class="text-center">Clients</th>
+												</tr>
+												<tr>
+													<th class="text-center">Nom</th>
+													<th class="text-center">Type</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body" th:if="${noteArchive.clientsSocietes.size() != 0}">
+												<tr th:each="cs : ${noteArchive.clientsSocietes}">
+													<td th:text="${cs.nom}"></td>
+													<td th:text="${cs.type}"></td>
+												</tr>
+											</tbody>
+											<tbody th:unless="${noteArchive.clientsSocietes.size() != 0}">
+												<tr>
+													<td colspan="2"> Pas de clients mentionnés</td>
+												</tr>												
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div th:unless="${noteArchive.clientsSocietes.size() > 3 }"  class="clearfix"></div>
+							<div th:unless="${noteArchive.clientsSocietes.size() > 3 }"  class="clearfix" style="margin-top: 20px;"></div>
+							<div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="3" class="text-center">Informations</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body">
+												<tr>
+													<td th:text="'Date de création'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.dateDemandeRemboursement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Etat'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.etat}"></td>
+												</tr>
+												
+												<!-- Partie FraisHebergement -->
+												<tr>
+													<td th:text="'Restaurant'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.nomRestaurant}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Date du dejeuner'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.dateDejeuner}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Adresse'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.adresse}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Montant'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.montant}"></td>
+												</tr>
+												
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="panel-group col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" th:href="'#justifArchive'+${noteArchive.id}" >Justificatif</a>
+							        </h4>
+							      </div>
+							      <div th:id="'justifArchive'+${noteArchive.id}" class="panel-collapse collapse">
+							        <div class="panel-body" style="overflow-y: scroll; height: 300px">
+							        	<div  class="col-xs-12 col-sm-12 col-md-12">
+											<img class="img-responsive" th:src="@{getJustif(id=${noteArchive.id})}" />
+										</div>
+							        </div>
+							      </div>
+							    </div>
+							  </div>
+						</div>
+
+
+						<!-- FraisVehiculePersonnel -->
+						<div class="row"
+							th:if="${noteArchive.class.simpleName=='FraisVehiculePersonnel'}">
+							<div
+								class="col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-4 col-md-offset-0 col-md-4">
+								<img class="img-responsive" th:src="@{/img/car512.png}" />
+							</div>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="2" class="text-center">Clients</th>
+												</tr>
+												<tr>
+													<th class="text-center">Nom</th>
+													<th class="text-center">Type</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body" th:if="${noteArchive.clientsSocietes.size() != 0}">
+												<tr th:each="cs : ${noteArchive.clientsSocietes}">
+													<td th:text="${cs.nom}"></td>
+													<td th:text="${cs.type}"></td>
+												</tr>
+											</tbody>
+											<tbody th:unless="${noteArchive.clientsSocietes.size() != 0}">
+												<tr>
+													<td colspan="2"> Pas de clients mentionnés</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="clearfix"></div>
+							<div class="col-xs-12 col-sm-12 col-md-12">
+								<div class="panel panel-default">
+									<div class="table-responsive">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="3" class="text-center">Informations</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body">
+												<tr>
+													<td th:text="'Date de création'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.dateDemandeRemboursement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Etat'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.etat}"></td>
+												</tr>
+
+												<!-- Partie FraisVehiculeDeTransport -->
+												<tr>
+													<td th:text="'Date de déplacement'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.dateDeplacement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Lieu de départ'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.LieuDepart}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Lieu d\'arrivée'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.LieuArrive}"></td>
+												</tr>
+
+												<!-- Partie FraisVehiculePersonnel -->
+												<tr>
+													<td th:text="'Carte grise vérifiée'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.carteGrise}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Moteur'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.type}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Puissance fiscale'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.puissanceFiscal}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Distance parcourue'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.nbreKilometrage} + ' km'"></td>
+												</tr>
+												<tr>
+													<td th:text="'Carburant consommé'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.carburantBrule} + ' L'"></td>
+												</tr>
+												<tr>
+													<td th:text="'Prix carburant'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.prixLitre} + ' € / Litre'"></td>
+												</tr>
+
+
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="panel-group col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" th:href="'#justifArchive'+${noteArchive.id}" >Justificatif</a>
+							        </h4>
+							      </div>
+							      <div th:id="'justifArchive'+${noteArchive.id}" class="panel-collapse collapse">
+							        <div class="panel-body" style="overflow-y: scroll; height: 300px">
+							        	<div  class="col-xs-12 col-sm-12 col-md-12">
+											<img class="img-responsive" th:src="@{getJustif(id=${noteArchive.id})}" />
+										</div>
+							        </div>
+							      </div>
+							    </div>
+							  </div>
+						</div>
+
+
+						<!-- FraisTaxi -->
+						<div class="row"
+							th:if="${noteArchive.class.simpleName=='FraisTaxi'}">
+							<div
+								class="col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-4 col-md-offset-0 col-md-4">
+								<img class="img-responsive" th:src="@{/img/taxi512.png}" />
+							</div>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="2" class="text-center">Clients</th>
+												</tr>
+												<tr>
+													<th class="text-center">Nom</th>
+													<th class="text-center">Type</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body" th:if="${noteArchive.clientsSocietes.size() != 0}">
+												<tr th:each="cs : ${noteArchive.clientsSocietes}">
+													<td th:text="${cs.nom}"></td>
+													<td th:text="${cs.type}"></td>
+												</tr>
+											</tbody>
+											<tbody th:unless="${noteArchive.clientsSocietes.size() != 0}">
+												<tr>
+													<td colspan="2"> Pas de clients mentionnés</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="clearfix"></div>
+							<div class="col-xs-12 col-sm-12 col-md-12">
+								<div class="panel panel-default">
+									<div class="table-responsive">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="3" class="text-center">Informations</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body">
+												<tr>
+													<td th:text="'Date de création'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.dateDemandeRemboursement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Etat'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.etat}"></td>
+												</tr>
+												
+												<!-- Partie FraisVehiculeDeTransport -->
+												<tr>
+													<td th:text="'Date de déplacement'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.dateDeplacement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Lieu de départ'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.LieuDepart}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Lieu d\'arrivée'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.LieuArrive}"></td>
+												</tr>
+
+												<!-- Partie FraisTaxi -->
+												<tr>
+													<td th:text="'Montant'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.montant}"></td>
+												</tr>
+
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="panel-group col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" th:href="'#justifArchive'+${noteArchive.id}" >Justificatif</a>
+							        </h4>
+							      </div>
+							      <div th:id="'justifArchive'+${noteArchive.id}" class="panel-collapse collapse">
+							        <div class="panel-body" style="overflow-y: scroll; height: 300px">
+							        	<div  class="col-xs-12 col-sm-12 col-md-12">
+											<img class="img-responsive" th:src="@{getJustif(id=${noteArchive.id})}" />
+										</div>
+							        </div>
+							      </div>
+							    </div>
+							  </div>
+						</div>
+
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<!-- Fin Modal notesArchive -->
+	</div>
+	<!-- Fin Archive Note De Frais Salarie -->
+
+	<!-- Debut Note De Frais Encours Salarie -->
+	<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6"
+		th:fragment="notesEncoursData (notesPasEncoreValide)">
+		<div class="panel panel-default"
+			style="box-shadow: 1px 2px 50px rgba(0, 0, 0, 0.05);">
+			<div class="table-responsive">
+				<table class="table table-striped">
+					<thead class="panel-heading">
+						<tr>
+							<th colspan="6" class="text-center">Notes de frais encours</th>
+						</tr>
+						<tr>
+							<th class="text-center">Type</th>
+							<th class="text-center">Date</th>
+							<th class="text-center">Etat</th>
+							<th class="text-center" colspan="3">Actions</th>
+						</tr>
+					</thead>
+					<tbody class="panel-body" th:object="${salarie}">
+						<tr th:each="notePasEncoreValide : ${notesPasEncoreValide}">
+							<!-- <td><img th:src="@{${notePasEncoreValide.getImgURL(notePasEncoreValide.id)}}"/><span style="margin-left: 8px;" th:text="${notePasEncoreValide.class.simpleName}"></span></td> -->
+							<td class="text-center"><img
+								th:src="@{${notePasEncoreValide.getImgURL(notePasEncoreValide.id)}}" /></td>
+							<td class="text-center" th:text="${notePasEncoreValide.dateDemandeRemboursement}"></td>
+							<td class="text-center" th:text="${notePasEncoreValide.etat}"></td>
+							<td><a href="@{NotedeFrais(id=${s.id})}"
+								class="btn btn-info"
+								th:attr="data-toggle='modal', data-target='#myPasEncoreValideModal'+${notePasEncoreValide.id}">Details</a></td>
+							<td><a 	th:href="@{DeleteNote(id=${notePasEncoreValide.id})}" class="btn btn-info" >Supprimer</a></td>
+							<td><a  th:href="@{ModifierNote(id=${notePasEncoreValide.id})}" class="btn btn-info" >Modifier</a></td>
+						</tr>
+						<tr th:if="${notesPasEncoreValide.size() != 0}">
+							<td colspan="6">
+								<ul class="nav nav-pills">
+									<li th:each="pPasEncoreValide:${pagesPasEncoreValide}"
+										th:class="${pPasEncoreValide==pageCourantePasEncoreValide}?active:''">
+										<a th:text="${pPasEncoreValide}"
+										th:href="@{Home(pagePasEncoreValide=${pPasEncoreValide}, pageArchive=${pageCouranteArchive})}"></a>
+									</li>
+								</ul>
+							</td>
+						</tr>
+						<tr th:if="${notesPasEncoreValide.size() == 0}">
+							<td colspan="6" class="text-center"> Pas de notes encours de traitement !</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- Modal notesArchive -->
+		<div th:each="notePasEncoreValide : ${notesPasEncoreValide}"
+			class="modal fade"
+			th:id="'myPasEncoreValideModal'+${notePasEncoreValide.id}"
+			role="dialog">
+			<div class="modal-dialog">
+
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Note de Frais Details</h4>
+					</div>
+					<div class="modal-body">
+							
+						<!-- FraisHebergement -->
+						<div class="row"
+							th:if="${notePasEncoreValide.class.simpleName=='FraisHebergement'}">
+							<div
+								class="col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-4 col-md-offset-0 col-md-4">
+								<img class="img-responsive" th:src="@{/img/hotel512.png}" />
+							</div>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="3" class="text-center">Informations</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body">
+												<tr>
+													<td th:text="'Date de création'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.dateDemandeRemboursement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Etat'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.etat}"></td>
+												</tr>
+												
+												<!-- Partie FraisHebergement -->
+												<tr>
+													<td th:text="'Hotel'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.nomHotel} + ' ' + ${notePasEncoreValide.nombreEtoiles} + '*'"></td>
+												</tr>
+												<tr>
+													<td th:text="'Adresse'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.adresse}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Date de reservation'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.dateHebergement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Nombre de nuits'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.nombreDeNuitOuJour}"></td>
+												</tr>
+												
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+					        <div class="panel-group col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" th:href="'#justif'+${notePasEncoreValide.id}" >Justificatif</a>
+							        </h4>
+							      </div>
+							      <div th:id="'justif'+${notePasEncoreValide.id}" class="panel-collapse collapse">
+							        <div class="panel-body" style="overflow-y: scroll; height: 300px">
+							        	<div  class="col-xs-12 col-sm-12 col-md-12">
+											<img class="img-responsive" th:src="@{getJustif(id=${notePasEncoreValide.id})}" />
+										</div>
+							        </div>
+							      </div>
+							    </div>
+							  </div>
+						</div>
+
+						<!-- FraisDejeunerAffaire -->
+						<div class="row"
+							th:if="${notePasEncoreValide.class.simpleName=='FraisDejeunerAffaire'}">
+							<div
+								class="col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-4 col-md-offset-0 col-md-4">
+								<img class="img-responsive" th:src="@{/img/restaurant512.png}" />
+							</div>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="2" class="text-center">Clients</th>
+												</tr>
+												<tr>
+													<th class="text-center">Nom</th>
+													<th class="text-center">Type</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body" th:if="${notePasEncoreValide.clientsSocietes.size() != 0}">
+												<tr th:each="cs : ${notePasEncoreValide.clientsSocietes}">
+													<td th:text="${cs.nom}"></td>
+													<td th:text="${cs.type}"></td>
+												</tr>
+											</tbody>
+											<tbody th:unless="${notePasEncoreValide.clientsSocietes.size() != 0}">
+												<tr>
+													<td colspan="2"> Pas de clients mentionnés</td>
+												</tr>												
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div th:unless="${notePasEncoreValide.clientsSocietes.size() > 3 }"  class="clearfix"></div>
+							<div th:unless="${notePasEncoreValide.clientsSocietes.size() > 3 }"  class="clearfix" style="margin-top: 20px;"></div>
+							<div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="3" class="text-center">Informations</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body">
+												<tr>
+													<td th:text="'Date de création'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.dateDemandeRemboursement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Etat'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.etat}"></td>
+												</tr>
+												
+												<!-- Partie FraisHebergement -->
+												<tr>
+													<td th:text="'Restaurant'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.nomRestaurant}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Date du dejeuner'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.dateDejeuner}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Adresse'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.adresse}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Montant'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.montant}"></td>
+												</tr>
+												
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="panel-group col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" th:href="'#justif'+${notePasEncoreValide.id}" >Justificatif</a>
+							        </h4>
+							      </div>
+							      <div th:id="'justif'+${notePasEncoreValide.id}" class="panel-collapse collapse">
+							        <div class="panel-body" style="overflow-y: scroll; height: 300px">
+							        	<div  class="col-xs-12 col-sm-12 col-md-12">
+											<img class="img-responsive" th:src="@{getJustif(id=${notePasEncoreValide.id})}" />
+										</div>
+							        </div>
+							      </div>
+							    </div>
+							  </div>
+						</div>
+
+
+						<!-- FraisVehiculePersonnel -->
+						<div class="row"
+							th:if="${notePasEncoreValide.class.simpleName=='FraisVehiculePersonnel'}">
+							<div
+								class="col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-4 col-md-offset-0 col-md-4">
+								<img class="img-responsive" th:src="@{/img/car512.png}" />
+							</div>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="2" class="text-center">Clients</th>
+												</tr>
+												<tr>
+													<th class="text-center">Nom</th>
+													<th class="text-center">Type</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body" th:if="${notePasEncoreValide.clientsSocietes.size() != 0}">
+												<tr th:each="cs : ${notePasEncoreValide.clientsSocietes}">
+													<td th:text="${cs.nom}"></td>
+													<td th:text="${cs.type}"></td>
+												</tr>
+											</tbody>
+											<tbody th:unless="${notePasEncoreValide.clientsSocietes.size() != 0}">
+												<tr>
+													<td colspan="2"> Pas de clients mentionnés</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="clearfix"></div>
+							<div class="col-xs-12 col-sm-12 col-md-12">
+								<div class="panel panel-default">
+									<div class="table-responsive">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="3" class="text-center">Informations</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body">
+												<tr>
+													<td th:text="'Date de création'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.dateDemandeRemboursement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Etat'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.etat}"></td>
+												</tr>
+
+												<!-- Partie FraisVehiculeDeTransport -->
+												<tr>
+													<td th:text="'Date de déplacement'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.dateDeplacement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Lieu de départ'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.LieuDepart}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Lieu d\'arrivée'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.LieuArrive}"></td>
+												</tr>
+
+												<!-- Partie FraisVehiculePersonnel -->
+												<tr>
+													<td th:text="'Carte grise vérifiée'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.carteGrise}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Moteur'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.type}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Puissance fiscale'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.puissanceFiscal}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Distance parcourue'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.nbreKilometrage} + ' km'"></td>
+												</tr>
+												<tr>
+													<td th:text="'Carburant consommé'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.carburantBrule} + ' L'"></td>
+												</tr>
+												<tr>
+													<td th:text="'Prix carburant'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.prixLitre} + ' € / Litre'"></td>
+												</tr>
+
+
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="panel-group col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" th:href="'#justif'+${notePasEncoreValide.id}" >Justificatif</a>
+							        </h4>
+							      </div>
+							      <div th:id="'justif'+${notePasEncoreValide.id}" class="panel-collapse collapse">
+							        <div class="panel-body" style="overflow-y: scroll; height: 300px">
+							        	<div  class="col-xs-12 col-sm-12 col-md-12">
+											<img class="img-responsive" th:src="@{getJustif(id=${notePasEncoreValide.id})}" />
+										</div>
+							        </div>
+							      </div>
+							    </div>
+							  </div>
+						</div>
+
+
+						<!-- FraisTaxi -->
+						<div class="row"
+							th:if="${notePasEncoreValide.class.simpleName=='FraisTaxi'}">
+							<div
+								class="col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-4 col-md-offset-0 col-md-4">
+								<img class="img-responsive" th:src="@{/img/taxi512.png}" />
+							</div>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="2" class="text-center">Clients</th>
+												</tr>
+												<tr>
+													<th class="text-center">Nom</th>
+													<th class="text-center">Type</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body" th:if="${notePasEncoreValide.clientsSocietes.size() != 0}">
+												<tr th:each="cs : ${notePasEncoreValide.clientsSocietes}">
+													<td th:text="${cs.nom}"></td>
+													<td th:text="${cs.type}"></td>
+												</tr>
+											</tbody>
+											<tbody th:unless="${notePasEncoreValide.clientsSocietes.size() != 0}">
+												<tr>
+													<td colspan="2"> Pas de clients mentionnés</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="clearfix"></div>
+							<div class="col-xs-12 col-sm-12 col-md-12">
+								<div class="panel panel-default">
+									<div class="table-responsive">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="3" class="text-center">Informations</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body">
+												<tr>
+													<td th:text="'Date de création'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.dateDemandeRemboursement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Etat'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.etat}"></td>
+												</tr>
+												
+												<!-- Partie FraisVehiculeDeTransport -->
+												<tr>
+													<td th:text="'Date de déplacement'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.dateDeplacement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Lieu de départ'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.LieuDepart}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Lieu d\'arrivée'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.LieuArrive}"></td>
+												</tr>
+
+												<!-- Partie FraisTaxi -->
+												<tr>
+													<td th:text="'Montant'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.montant}"></td>
+												</tr>
+
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="panel-group col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" th:href="'#justif'+${notePasEncoreValide.id}" >Justificatif</a>
+							        </h4>
+							      </div>
+							      <div th:id="'justif'+${notePasEncoreValide.id}" class="panel-collapse collapse">
+							        <div class="panel-body" style="overflow-y: scroll; height: 300px">
+							        	<div  class="col-xs-12 col-sm-12 col-md-12">
+											<img class="img-responsive" th:src="@{getJustif(id=${notePasEncoreValide.id})}" />
+										</div>
+							        </div>
+							      </div>
+							    </div>
+							  </div>
+						</div>
+							
+							
+							
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<!-- Fin Modal notesArchive -->
+	</div>
+	<!-- Fin Note De Frais Encours Salarie -->
+	
+	<!-- Debut Note De Frais Encours Admin -->
+	<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6"
+		th:fragment="notesEncoursDataAdmin (notesPasEncoreValide)">
+		<div class="panel panel-default"
+			style="box-shadow: 1px 2px 50px rgba(0, 0, 0, 0.05);">
+			<div class="table-responsive">
+				<table class="table table-striped">
+					<thead class="panel-heading">
+						<tr>
+							<th colspan="6" class="text-center">Notes de frais encours</th>
+						</tr>
+						<tr>
+							<th class="text-center">Type</th>
+							<th class="text-center">Date</th>
+							<th class="text-center">Etat</th>
+							<th class="text-center" colspan="3">Actions</th>
+						</tr>
+					</thead>
+					<tbody class="panel-body" th:object="${salarie}">
+						<tr th:each="notePasEncoreValide : ${notesPasEncoreValide}">
+							<!-- <td><img th:src="@{${notePasEncoreValide.getImgURL(notePasEncoreValide.id)}}"/><span style="margin-left: 8px;" th:text="${notePasEncoreValide.class.simpleName}"></span></td> -->
+							<td class="text-center"><img
+								th:src="@{${notePasEncoreValide.getImgURL(notePasEncoreValide.id)}}" /></td>
+							<td class="text-center" th:text="${notePasEncoreValide.dateDemandeRemboursement}"></td>
+							<td class="text-center" th:text="${notePasEncoreValide.etat}"></td>
+							<td><a href="@{NotedeFrais(id=${s.id})}"
+								class="btn btn-info"
+								th:attr="data-toggle='modal', data-target='#myPasEncoreValideModal'+${notePasEncoreValide.id}">Details</a></td>
+							<td><a th:href="@{ValiderNote(id=${notePasEncoreValide.id})}" class="btn btn-info" >Valider</a></td>
+							<td><a th:href="@{RefuserNote(id=${notePasEncoreValide.id})}" class="btn btn-info" >Réfuser</a></td>
+						</tr>
+						<tr th:if="${notesPasEncoreValide.size() != 0}">
+							<td colspan="6">
+								<ul class="nav nav-pills">
+									<li th:each="pPasEncoreValide:${pagesPasEncoreValide}"
+										th:class="${pPasEncoreValide==pageCourantePasEncoreValide}?active:''">
+										<a th:text="${pPasEncoreValide}"
+										th:href="@{Home(pagePasEncoreValide=${pPasEncoreValide}, pageArchive=${pageCouranteArchive})}"></a>
+									</li>
+								</ul>
+							</td>
+						</tr>
+						<tr th:if="${notesPasEncoreValide.size() == 0}">
+							<td colspan="6" class="text-center"> Pas de notes encours de traitement !</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- Modal notesArchive -->
+		<div th:each="notePasEncoreValide : ${notesPasEncoreValide}"
+			class="modal fade"
+			th:id="'myPasEncoreValideModal'+${notePasEncoreValide.id}"
+			role="dialog">
+			<div class="modal-dialog">
+
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Note de Frais Details</h4>
+					</div>
+					<div class="modal-body">
+							
+						<!-- FraisHebergement -->
+						<div class="row"
+							th:if="${notePasEncoreValide.class.simpleName=='FraisHebergement'}">
+							<div
+								class="col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-4 col-md-offset-0 col-md-4">
+								<img class="img-responsive" th:src="@{/img/hotel512.png}" />
+							</div>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="3" class="text-center">Informations</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body">
+												<tr>
+													<td th:text="'Date de création'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.dateDemandeRemboursement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Etat'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.etat}"></td>
+												</tr>
+												
+												<!-- Partie FraisHebergement -->
+												<tr>
+													<td th:text="'Hotel'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.nomHotel} + ' ' + ${notePasEncoreValide.nombreEtoiles} + '*'"></td>
+												</tr>
+												<tr>
+													<td th:text="'Adresse'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.adresse}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Date de reservation'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.dateHebergement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Nombre de nuits'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.nombreDeNuitOuJour}"></td>
+												</tr>
+												
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+					        <div class="panel-group col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" th:href="'#justif'+${notePasEncoreValide.id}" >Justificatif</a>
+							        </h4>
+							      </div>
+							      <div th:id="'justif'+${notePasEncoreValide.id}" class="panel-collapse collapse">
+							        <div class="panel-body" style="overflow-y: scroll; height: 300px">
+							        	<div  class="col-xs-12 col-sm-12 col-md-12">
+											<img class="img-responsive" th:src="@{getJustif(id=${notePasEncoreValide.id})}" />
+										</div>
+							        </div>
+							      </div>
+							    </div>
+							  </div>
+						</div>
+
+						<!-- FraisDejeunerAffaire -->
+						<div class="row"
+							th:if="${notePasEncoreValide.class.simpleName=='FraisDejeunerAffaire'}">
+							<div
+								class="col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-4 col-md-offset-0 col-md-4">
+								<img class="img-responsive" th:src="@{/img/restaurant512.png}" />
+							</div>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="2" class="text-center">Clients</th>
+												</tr>
+												<tr>
+													<th class="text-center">Nom</th>
+													<th class="text-center">Type</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body" th:if="${notePasEncoreValide.clientsSocietes.size() != 0}">
+												<tr th:each="cs : ${notePasEncoreValide.clientsSocietes}">
+													<td th:text="${cs.nom}"></td>
+													<td th:text="${cs.type}"></td>
+												</tr>
+											</tbody>
+											<tbody th:unless="${notePasEncoreValide.clientsSocietes.size() != 0}">
+												<tr>
+													<td colspan="2"> Pas de clients mentionnés</td>
+												</tr>												
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div th:unless="${notePasEncoreValide.clientsSocietes.size() > 3 }"  class="clearfix"></div>
+							<div th:unless="${notePasEncoreValide.clientsSocietes.size() > 3 }"  class="clearfix" style="margin-top: 20px;"></div>
+							<div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="3" class="text-center">Informations</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body">
+												<tr>
+													<td th:text="'Date de création'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.dateDemandeRemboursement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Etat'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.etat}"></td>
+												</tr>
+												
+												<!-- Partie FraisHebergement -->
+												<tr>
+													<td th:text="'Restaurant'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.nomRestaurant}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Date du dejeuner'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.dateDejeuner}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Adresse'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.adresse}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Montant'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.montant}"></td>
+												</tr>
+												
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="panel-group col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" th:href="'#justif'+${notePasEncoreValide.id}" >Justificatif</a>
+							        </h4>
+							      </div>
+							      <div th:id="'justif'+${notePasEncoreValide.id}" class="panel-collapse collapse">
+							        <div class="panel-body" style="overflow-y: scroll; height: 300px">
+							        	<div  class="col-xs-12 col-sm-12 col-md-12">
+											<img class="img-responsive" th:src="@{getJustif(id=${notePasEncoreValide.id})}" />
+										</div>
+							        </div>
+							      </div>
+							    </div>
+							  </div>
+						</div>
+
+
+						<!-- FraisVehiculePersonnel -->
+						<div class="row"
+							th:if="${notePasEncoreValide.class.simpleName=='FraisVehiculePersonnel'}">
+							<div
+								class="col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-4 col-md-offset-0 col-md-4">
+								<img class="img-responsive" th:src="@{/img/car512.png}" />
+							</div>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="2" class="text-center">Clients</th>
+												</tr>
+												<tr>
+													<th class="text-center">Nom</th>
+													<th class="text-center">Type</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body" th:if="${notePasEncoreValide.clientsSocietes.size() != 0}">
+												<tr th:each="cs : ${notePasEncoreValide.clientsSocietes}">
+													<td th:text="${cs.nom}"></td>
+													<td th:text="${cs.type}"></td>
+												</tr>
+											</tbody>
+											<tbody th:unless="${notePasEncoreValide.clientsSocietes.size() != 0}">
+												<tr>
+													<td colspan="2"> Pas de clients mentionnés</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="clearfix"></div>
+							<div class="col-xs-12 col-sm-12 col-md-12">
+								<div class="panel panel-default">
+									<div class="table-responsive">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="3" class="text-center">Informations</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body">
+												<tr>
+													<td th:text="'Date de création'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.dateDemandeRemboursement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Etat'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.etat}"></td>
+												</tr>
+
+												<!-- Partie FraisVehiculeDeTransport -->
+												<tr>
+													<td th:text="'Date de déplacement'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.dateDeplacement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Lieu de départ'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.LieuDepart}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Lieu d\'arrivée'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.LieuArrive}"></td>
+												</tr>
+
+												<!-- Partie FraisVehiculePersonnel -->
+												<tr>
+													<td th:text="'Carte grise vérifiée'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.carteGrise}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Moteur'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.type}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Puissance fiscale'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.puissanceFiscal}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Distance parcourue'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.nbreKilometrage} + ' km'"></td>
+												</tr>
+												<tr>
+													<td th:text="'Carburant consommé'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.carburantBrule} + ' L'"></td>
+												</tr>
+												<tr>
+													<td th:text="'Prix carburant'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.prixLitre} + ' € / Litre'"></td>
+												</tr>
+
+
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="panel-group col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" th:href="'#justif'+${notePasEncoreValide.id}" >Justificatif</a>
+							        </h4>
+							      </div>
+							      <div th:id="'justif'+${notePasEncoreValide.id}" class="panel-collapse collapse">
+							        <div class="panel-body" style="overflow-y: scroll; height: 300px">
+							        	<div  class="col-xs-12 col-sm-12 col-md-12">
+											<img class="img-responsive" th:src="@{getJustif(id=${notePasEncoreValide.id})}" />
+										</div>
+							        </div>
+							      </div>
+							    </div>
+							  </div>
+						</div>
+
+
+						<!-- FraisTaxi -->
+						<div class="row"
+							th:if="${notePasEncoreValide.class.simpleName=='FraisTaxi'}">
+							<div
+								class="col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-4 col-md-offset-0 col-md-4">
+								<img class="img-responsive" th:src="@{/img/taxi512.png}" />
+							</div>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="2" class="text-center">Clients</th>
+												</tr>
+												<tr>
+													<th class="text-center">Nom</th>
+													<th class="text-center">Type</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body" th:if="${notePasEncoreValide.clientsSocietes.size() != 0}">
+												<tr th:each="cs : ${notePasEncoreValide.clientsSocietes}">
+													<td th:text="${cs.nom}"></td>
+													<td th:text="${cs.type}"></td>
+												</tr>
+											</tbody>
+											<tbody th:unless="${notePasEncoreValide.clientsSocietes.size() != 0}">
+												<tr>
+													<td colspan="2"> Pas de clients mentionnés</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="clearfix"></div>
+							<div class="col-xs-12 col-sm-12 col-md-12">
+								<div class="panel panel-default">
+									<div class="table-responsive">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="3" class="text-center">Informations</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body">
+												<tr>
+													<td th:text="'Date de création'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.dateDemandeRemboursement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Etat'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.etat}"></td>
+												</tr>
+												
+												<!-- Partie FraisVehiculeDeTransport -->
+												<tr>
+													<td th:text="'Date de déplacement'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.dateDeplacement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Lieu de départ'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.LieuDepart}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Lieu d\'arrivée'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.LieuArrive}"></td>
+												</tr>
+
+												<!-- Partie FraisTaxi -->
+												<tr>
+													<td th:text="'Montant'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.montant}"></td>
+												</tr>
+
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="panel-group col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" th:href="'#justif'+${notePasEncoreValide.id}" >Justificatif</a>
+							        </h4>
+							      </div>
+							      <div th:id="'justif'+${notePasEncoreValide.id}" class="panel-collapse collapse">
+							        <div class="panel-body" style="overflow-y: scroll; height: 300px">
+							        	<div  class="col-xs-12 col-sm-12 col-md-12">
+											<img class="img-responsive" th:src="@{getJustif(id=${notePasEncoreValide.id})}" />
+										</div>
+							        </div>
+							      </div>
+							    </div>
+							  </div>
+						</div>
+							
+							
+							
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<!-- Fin Modal notesArchive -->
+	</div>
+	<!-- Fin Note De Frais Encours Admin -->
+	
+	<!-- Debut Note De Frais Encours Admin /Salarie -->
+	<div class="col-xs-12 col-sm-6 col-md-6 col-lg-6"
+		th:fragment="notesEncoursDataAdminUrlSalarie (notesPasEncoreValide)">
+		<div class="panel panel-default"
+			style="box-shadow: 1px 2px 50px rgba(0, 0, 0, 0.05);">
+			<div class="table-responsive">
+				<table class="table table-striped">
+					<thead class="panel-heading">
+						<tr>
+							<th colspan="6" class="text-center">Notes de frais encours</th>
+						</tr>
+						<tr>
+							<th class="text-center">Type</th>
+							<th class="text-center">Date</th>
+							<th class="text-center">Etat</th>
+							<th class="text-center" colspan="3">Actions</th>
+						</tr>
+					</thead>
+					<tbody class="panel-body" th:object="${s}">
+						<tr th:each="notePasEncoreValide : ${notesPasEncoreValide}">
+							<!-- <td><img th:src="@{${notePasEncoreValide.getImgURL(notePasEncoreValide.id)}}"/><span style="margin-left: 8px;" th:text="${notePasEncoreValide.class.simpleName}"></span></td> -->
+							<td class="text-center"><img
+								th:src="@{${notePasEncoreValide.getImgURL(notePasEncoreValide.id)}}" /></td>
+							<td class="text-center" th:text="${notePasEncoreValide.dateDemandeRemboursement}"></td>
+							<td class="text-center" th:text="${notePasEncoreValide.etat}"></td>
+							<td><a href="@{NotedeFrais(id=${s.id})}"
+								class="btn btn-info"
+								th:attr="data-toggle='modal', data-target='#myPasEncoreValideModal'+${notePasEncoreValide.id}">Details</a></td>
+							<td><a th:href="@{../ValiderNote(id=${notePasEncoreValide.id})}" class="btn btn-info" >Valider</a></td>
+							<td><a th:href="@{../RefuserNote(id=${notePasEncoreValide.id})}" class="btn btn-info" >Réfuser</a></td>
+						</tr>
+						<tr th:if="${notesPasEncoreValide.size() != 0}">
+							<td colspan="6">
+								<ul class="nav nav-pills">
+									<li th:each="pPasEncoreValide:${pagesPasEncoreValide}"
+										th:class="${pPasEncoreValide==pageCourantePasEncoreValide}?active:''">
+										<a th:text="${pPasEncoreValide}"
+										th:href="@{NotedeFrais(id=${s.id}, pagePasEncoreValide=${pPasEncoreValide}, pageArchive=${pageCouranteArchive})}"></a>
+									</li>
+								</ul>
+							</td>
+						</tr>
+						<tr th:if="${notesPasEncoreValide.size() == 0}">
+							<td colspan="6" class="text-center"> Pas de notes encours de traitement !</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- Modal notesArchive -->
+		<div th:each="notePasEncoreValide : ${notesPasEncoreValide}"
+			class="modal fade"
+			th:id="'myPasEncoreValideModal'+${notePasEncoreValide.id}"
+			role="dialog">
+			<div class="modal-dialog">
+
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Note de Frais Details</h4>
+					</div>
+					<div class="modal-body">
+							
+						<!-- FraisHebergement -->
+						<div class="row"
+							th:if="${notePasEncoreValide.class.simpleName=='FraisHebergement'}">
+							<div
+								class="col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-4 col-md-offset-0 col-md-4">
+								<img class="img-responsive" th:src="@{/img/hotel512.png}" />
+							</div>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="3" class="text-center">Informations</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body">
+												<tr>
+													<td th:text="'Date de création'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.dateDemandeRemboursement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Etat'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.etat}"></td>
+												</tr>
+												
+												<!-- Partie FraisHebergement -->
+												<tr>
+													<td th:text="'Hotel'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.nomHotel} + ' ' + ${notePasEncoreValide.nombreEtoiles} + '*'"></td>
+												</tr>
+												<tr>
+													<td th:text="'Adresse'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.adresse}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Date de reservation'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.dateHebergement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Nombre de nuits'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.nombreDeNuitOuJour}"></td>
+												</tr>
+												
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+					        <div class="panel-group col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" th:href="'#justif'+${notePasEncoreValide.id}" >Justificatif</a>
+							        </h4>
+							      </div>
+							      <div th:id="'justif'+${notePasEncoreValide.id}" class="panel-collapse collapse">
+							        <div class="panel-body" style="overflow-y: scroll; height: 300px">
+							        	<div  class="col-xs-12 col-sm-12 col-md-12">
+											<img class="img-responsive" th:src="@{../getJustif(id=${notePasEncoreValide.id})}" />
+										</div>
+							        </div>
+							      </div>
+							    </div>
+							  </div>
+						</div>
+
+						<!-- FraisDejeunerAffaire -->
+						<div class="row"
+							th:if="${notePasEncoreValide.class.simpleName=='FraisDejeunerAffaire'}">
+							<div
+								class="col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-4 col-md-offset-0 col-md-4">
+								<img class="img-responsive" th:src="@{/img/restaurant512.png}" />
+							</div>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="2" class="text-center">Clients</th>
+												</tr>
+												<tr>
+													<th class="text-center">Nom</th>
+													<th class="text-center">Type</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body" th:if="${notePasEncoreValide.clientsSocietes.size() != 0}">
+												<tr th:each="cs : ${notePasEncoreValide.clientsSocietes}">
+													<td th:text="${cs.nom}"></td>
+													<td th:text="${cs.type}"></td>
+												</tr>
+											</tbody>
+											<tbody th:unless="${notePasEncoreValide.clientsSocietes.size() != 0}">
+												<tr>
+													<td colspan="2"> Pas de clients mentionnés</td>
+												</tr>												
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div th:unless="${notePasEncoreValide.clientsSocietes.size() > 3 }"  class="clearfix"></div>
+							<div th:unless="${notePasEncoreValide.clientsSocietes.size() > 3 }"  class="clearfix" style="margin-top: 20px;"></div>
+							<div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="3" class="text-center">Informations</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body">
+												<tr>
+													<td th:text="'Date de création'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.dateDemandeRemboursement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Etat'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.etat}"></td>
+												</tr>
+												
+												<!-- Partie FraisHebergement -->
+												<tr>
+													<td th:text="'Restaurant'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.nomRestaurant}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Date du dejeuner'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.dateDejeuner}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Adresse'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.adresse}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Montant'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.montant}"></td>
+												</tr>
+												
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="panel-group col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" th:href="'#justif'+${notePasEncoreValide.id}" >Justificatif</a>
+							        </h4>
+							      </div>
+							      <div th:id="'justif'+${notePasEncoreValide.id}" class="panel-collapse collapse">
+							        <div class="panel-body" style="overflow-y: scroll; height: 300px">
+							        	<div  class="col-xs-12 col-sm-12 col-md-12">
+											<img class="img-responsive" th:src="@{../getJustif(id=${notePasEncoreValide.id})}" />
+										</div>
+							        </div>
+							      </div>
+							    </div>
+							  </div>
+						</div>
+
+
+						<!-- FraisVehiculePersonnel -->
+						<div class="row"
+							th:if="${notePasEncoreValide.class.simpleName=='FraisVehiculePersonnel'}">
+							<div
+								class="col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-4 col-md-offset-0 col-md-4">
+								<img class="img-responsive" th:src="@{/img/car512.png}" />
+							</div>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="2" class="text-center">Clients</th>
+												</tr>
+												<tr>
+													<th class="text-center">Nom</th>
+													<th class="text-center">Type</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body" th:if="${notePasEncoreValide.clientsSocietes.size() != 0}">
+												<tr th:each="cs : ${notePasEncoreValide.clientsSocietes}">
+													<td th:text="${cs.nom}"></td>
+													<td th:text="${cs.type}"></td>
+												</tr>
+											</tbody>
+											<tbody th:unless="${notePasEncoreValide.clientsSocietes.size() != 0}">
+												<tr>
+													<td colspan="2"> Pas de clients mentionnés</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="clearfix"></div>
+							<div class="col-xs-12 col-sm-12 col-md-12">
+								<div class="panel panel-default">
+									<div class="table-responsive">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="3" class="text-center">Informations</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body">
+												<tr>
+													<td th:text="'Date de création'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.dateDemandeRemboursement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Etat'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.etat}"></td>
+												</tr>
+
+												<!-- Partie FraisVehiculeDeTransport -->
+												<tr>
+													<td th:text="'Date de déplacement'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.dateDeplacement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Lieu de départ'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.LieuDepart}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Lieu d\'arrivée'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.LieuArrive}"></td>
+												</tr>
+
+												<!-- Partie FraisVehiculePersonnel -->
+												<tr>
+													<td th:text="'Carte grise vérifiée'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.carteGrise}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Moteur'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.type}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Puissance fiscale'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.puissanceFiscal}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Distance parcourue'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.nbreKilometrage} + ' km'"></td>
+												</tr>
+												<tr>
+													<td th:text="'Carburant consommé'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.carburantBrule} + ' L'"></td>
+												</tr>
+												<tr>
+													<td th:text="'Prix carburant'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.prixLitre} + ' € / Litre'"></td>
+												</tr>
+
+
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="panel-group col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" th:href="'#justif'+${notePasEncoreValide.id}" >Justificatif</a>
+							        </h4>
+							      </div>
+							      <div th:id="'justif'+${notePasEncoreValide.id}" class="panel-collapse collapse">
+							        <div class="panel-body" style="overflow-y: scroll; height: 300px">
+							        	<div  class="col-xs-12 col-sm-12 col-md-12">
+											<img class="img-responsive" th:src="@{../getJustif(id=${notePasEncoreValide.id})}" />
+										</div>
+							        </div>
+							      </div>
+							    </div>
+							  </div>
+						</div>
+
+
+						<!-- FraisTaxi -->
+						<div class="row"
+							th:if="${notePasEncoreValide.class.simpleName=='FraisTaxi'}">
+							<div
+								class="col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-4 col-md-offset-0 col-md-4">
+								<img class="img-responsive" th:src="@{/img/taxi512.png}" />
+							</div>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="2" class="text-center">Clients</th>
+												</tr>
+												<tr>
+													<th class="text-center">Nom</th>
+													<th class="text-center">Type</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body" th:if="${notePasEncoreValide.clientsSocietes.size() != 0}">
+												<tr th:each="cs : ${notePasEncoreValide.clientsSocietes}">
+													<td th:text="${cs.nom}"></td>
+													<td th:text="${cs.type}"></td>
+												</tr>
+											</tbody>
+											<tbody th:unless="${notePasEncoreValide.clientsSocietes.size() != 0}">
+												<tr>
+													<td colspan="2"> Pas de clients mentionnés</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="clearfix"></div>
+							<div class="col-xs-12 col-sm-12 col-md-12">
+								<div class="panel panel-default">
+									<div class="table-responsive">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="3" class="text-center">Informations</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body">
+												<tr>
+													<td th:text="'Date de création'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.dateDemandeRemboursement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Etat'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${notePasEncoreValide.etat}"></td>
+												</tr>
+												
+												<!-- Partie FraisVehiculeDeTransport -->
+												<tr>
+													<td th:text="'Date de déplacement'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.dateDeplacement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Lieu de départ'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.LieuDepart}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Lieu d\'arrivée'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.LieuArrive}"></td>
+												</tr>
+
+												<!-- Partie FraisTaxi -->
+												<tr>
+													<td th:text="'Montant'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${notePasEncoreValide.montant}"></td>
+												</tr>
+
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="panel-group col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" th:href="'#justif'+${notePasEncoreValide.id}" >Justificatif</a>
+							        </h4>
+							      </div>
+							      <div th:id="'justif'+${notePasEncoreValide.id}" class="panel-collapse collapse">
+							        <div class="panel-body" style="overflow-y: scroll; height: 300px">
+							        	<div  class="col-xs-12 col-sm-12 col-md-12">
+											<img class="img-responsive" th:src="@{../getJustif(id=${notePasEncoreValide.id})}" />
+										</div>
+							        </div>
+							      </div>
+							    </div>
+							  </div>
+						</div>
+							
+							
+							
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<!-- Fin Modal notesArchive -->
+	</div>
+	<!-- Fin Note De Frais Encours Admin /Salarie-->
+	
+	<!-- Debut Archive Note De Frais Admin /Salarie-->
+	<div class="col-xs-12 col-sm-6 col-md-3 col-lg-3"
+		th:fragment="archiveNotesDataAdminUrlSalarie (notesArchive)">
+		<div class="panel panel-default"
+			style="box-shadow: 1px 2px 50px rgba(0, 0, 0, 0.05);">
+			<div class="table-responsive">
+				<table class="table table-striped">
+					<thead class="panel-heading">
+						<tr>
+							<th colspan="4" class="text-center">Achive de note de frais</th>
+						</tr>
+						<tr>
+							<th class="text-center">Type</th>
+							<th class="text-center">Date</th>
+							<th class="text-center">Etat</th>
+							<th class="text-center">Actions</th>
+						</tr>
+					</thead>
+					<tbody class="panel-body">
+						<tr th:each="noteArchive : ${notesArchive}">
+							<!-- <td><img th:src="@{${noteArchive.getImgURL(noteArchive.id)}}"/><span style="margin-left: 8px;" th:text="${noteArchive.class.simpleName}"></span></td> -->
+							<td class="text-center"><img
+								th:src="@{${noteArchive.getImgURL(noteArchive.id)}}" /></td>
+							<td class="text-center" th:text="${noteArchive.dateDemandeRemboursement}"></td>
+							<td class="text-center" th:text="${noteArchive.etat}"></td>
+							<td><a href="@{NotedeFrais(id=${s.id})}"
+								class="btn btn-info"
+								th:attr="data-toggle='modal', data-target='#myArchiveModal'+${noteArchive.id}">Details</a></td>
+						</tr>
+						<tr th:if="${notesPasEncoreValide.size() != 0}">
+							<td colspan="4">
+								<ul class="nav nav-pills">
+									<li th:each="pArchive:${pagesArchive}"
+										th:class="${pArchive==pageCouranteArchive}?active:''"><a
+										th:text="${pArchive}"
+										th:href="@{NotedeFrais(id=${s.id}, pageArchive=${pArchive}, pagePasEncoreValide=${pageCourantePasEncoreValide})}"></a></li>
+								</ul>
+							</td>
+						</tr>
+						<tr th:if="${notesArchive.size() == 0}">
+							<td colspan="6" class="text-center"> Pas de notes en archives !</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- Modal notesArchive -->
+		<div th:each="noteArchive : ${notesArchive}" class="modal fade"
+			th:id="'myArchiveModal'+${noteArchive.id}" role="dialog">
+			<div class="modal-dialog">
+
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Note de Frais Details</h4>
+					</div>
+					<div class="modal-body">
+						
+						
+						<!-- FraisHebergement -->
+						<div class="row"
+							th:if="${noteArchive.class.simpleName=='FraisHebergement'}">
+							<div
+								class="col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-4 col-md-offset-0 col-md-4">
+								<img class="img-responsive" th:src="@{/img/hotel512.png}" />
+							</div>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="3" class="text-center">Informations</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body">
+												<tr>
+													<td th:text="'Date de création'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.dateDemandeRemboursement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Etat'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.etat}"></td>
+												</tr>
+												
+												<!-- Partie FraisHebergement -->
+												<tr>
+													<td th:text="'Hotel'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.nomHotel} + ' ' + ${noteArchive.nombreEtoiles} + '*'"></td>
+												</tr>
+												<tr>
+													<td th:text="'Adresse'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.adresse}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Date de reservation'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.dateHebergement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Nombre de nuits'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.nombreDeNuitOuJour}"></td>
+												</tr>
+												
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="panel-group col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" th:href="'#justifArchive'+${noteArchive.id}" >Justificatif</a>
+							        </h4>
+							      </div>
+							      <div th:id="'justifArchive'+${noteArchive.id}" class="panel-collapse collapse">
+							        <div class="panel-body" style="overflow-y: scroll; height: 300px">
+							        	<div  class="col-xs-12 col-sm-12 col-md-12">
+											<img class="img-responsive" th:src="@{../getJustif(id=${noteArchive.id})}" />
+										</div>
+							        </div>
+							      </div>
+							    </div>
+							  </div>
+						</div>
+
+						<!-- FraisDejeunerAffaire -->
+						<div class="row"
+							th:if="${noteArchive.class.simpleName=='FraisDejeunerAffaire'}">
+							<div
+								class="col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-4 col-md-offset-0 col-md-4">
+								<img class="img-responsive" th:src="@{/img/restaurant512.png}" />
+							</div>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="2" class="text-center">Clients</th>
+												</tr>
+												<tr>
+													<th class="text-center">Nom</th>
+													<th class="text-center">Type</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body" th:if="${noteArchive.clientsSocietes.size() != 0}">
+												<tr th:each="cs : ${noteArchive.clientsSocietes}">
+													<td th:text="${cs.nom}"></td>
+													<td th:text="${cs.type}"></td>
+												</tr>
+											</tbody>
+											<tbody th:unless="${noteArchive.clientsSocietes.size() != 0}">
+												<tr>
+													<td colspan="2"> Pas de clients mentionnés</td>
+												</tr>												
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div th:unless="${noteArchive.clientsSocietes.size() > 3 }"  class="clearfix"></div>
+							<div th:unless="${noteArchive.clientsSocietes.size() > 3 }"  class="clearfix" style="margin-top: 20px;"></div>
+							<div class="col-xs-12 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="3" class="text-center">Informations</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body">
+												<tr>
+													<td th:text="'Date de création'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.dateDemandeRemboursement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Etat'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.etat}"></td>
+												</tr>
+												
+												<!-- Partie FraisHebergement -->
+												<tr>
+													<td th:text="'Restaurant'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.nomRestaurant}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Date du dejeuner'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.dateDejeuner}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Adresse'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.adresse}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Montant'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.montant}"></td>
+												</tr>
+												
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="panel-group col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" th:href="'#justifArchive'+${noteArchive.id}" >Justificatif</a>
+							        </h4>
+							      </div>
+							      <div th:id="'justifArchive'+${noteArchive.id}" class="panel-collapse collapse">
+							        <div class="panel-body" style="overflow-y: scroll; height: 300px">
+							        	<div  class="col-xs-12 col-sm-12 col-md-12">
+											<img class="img-responsive" th:src="@{../getJustif(id=${noteArchive.id})}" />
+										</div>
+							        </div>
+							      </div>
+							    </div>
+							  </div>
+						</div>
+
+
+						<!-- FraisVehiculePersonnel -->
+						<div class="row"
+							th:if="${noteArchive.class.simpleName=='FraisVehiculePersonnel'}">
+							<div
+								class="col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-4 col-md-offset-0 col-md-4">
+								<img class="img-responsive" th:src="@{/img/car512.png}" />
+							</div>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="2" class="text-center">Clients</th>
+												</tr>
+												<tr>
+													<th class="text-center">Nom</th>
+													<th class="text-center">Type</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body" th:if="${noteArchive.clientsSocietes.size() != 0}">
+												<tr th:each="cs : ${noteArchive.clientsSocietes}">
+													<td th:text="${cs.nom}"></td>
+													<td th:text="${cs.type}"></td>
+												</tr>
+											</tbody>
+											<tbody th:unless="${noteArchive.clientsSocietes.size() != 0}">
+												<tr>
+													<td colspan="2"> Pas de clients mentionnés</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="clearfix"></div>
+							<div class="col-xs-12 col-sm-12 col-md-12">
+								<div class="panel panel-default">
+									<div class="table-responsive">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="3" class="text-center">Informations</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body">
+												<tr>
+													<td th:text="'Date de création'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.dateDemandeRemboursement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Etat'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.etat}"></td>
+												</tr>
+
+												<!-- Partie FraisVehiculeDeTransport -->
+												<tr>
+													<td th:text="'Date de déplacement'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.dateDeplacement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Lieu de départ'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.LieuDepart}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Lieu d\'arrivée'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.LieuArrive}"></td>
+												</tr>
+
+												<!-- Partie FraisVehiculePersonnel -->
+												<tr>
+													<td th:text="'Carte grise vérifiée'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.carteGrise}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Moteur'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.type}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Puissance fiscale'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.puissanceFiscal}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Distance parcourue'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.nbreKilometrage} + ' km'"></td>
+												</tr>
+												<tr>
+													<td th:text="'Carburant consommé'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.carburantBrule} + ' L'"></td>
+												</tr>
+												<tr>
+													<td th:text="'Prix carburant'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.prixLitre} + ' € / Litre'"></td>
+												</tr>
+
+
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="panel-group col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" th:href="'#justifArchive'+${noteArchive.id}" >Justificatif</a>
+							        </h4>
+							      </div>
+							      <div th:id="'justifArchive'+${noteArchive.id}" class="panel-collapse collapse">
+							        <div class="panel-body" style="overflow-y: scroll; height: 300px">
+							        	<div  class="col-xs-12 col-sm-12 col-md-12">
+											<img class="img-responsive" th:src="@{../getJustif(id=${noteArchive.id})}" />
+										</div>
+							        </div>
+							      </div>
+							    </div>
+							  </div>
+						</div>
+
+
+						<!-- FraisTaxi -->
+						<div class="row"
+							th:if="${noteArchive.class.simpleName=='FraisTaxi'}">
+							<div
+								class="col-xs-offset-3 col-xs-6 col-sm-offset-0 col-sm-4 col-md-offset-0 col-md-4">
+								<img class="img-responsive" th:src="@{/img/taxi512.png}" />
+							</div>
+							<div class="col-xs-12 col-sm-8 col-md-8">
+								<div class="panel panel-default">
+									<div class="table-responsive text-center">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="2" class="text-center">Clients</th>
+												</tr>
+												<tr>
+													<th class="text-center">Nom</th>
+													<th class="text-center">Type</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body" th:if="${noteArchive.clientsSocietes.size() != 0}">
+												<tr th:each="cs : ${noteArchive.clientsSocietes}">
+													<td th:text="${cs.nom}"></td>
+													<td th:text="${cs.type}"></td>
+												</tr>
+											</tbody>
+											<tbody th:unless="${noteArchive.clientsSocietes.size() != 0}">
+												<tr>
+													<td colspan="2"> Pas de clients mentionnés</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="clearfix"></div>
+							<div class="col-xs-12 col-sm-12 col-md-12">
+								<div class="panel panel-default">
+									<div class="table-responsive">
+										<table class="table table-striped">
+											<thead class="panel-heading">
+												<tr>
+													<th colspan="3" class="text-center">Informations</th>
+												</tr>
+											</thead>
+											<tbody class="panel-body">
+												<tr>
+													<td th:text="'Date de création'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.dateDemandeRemboursement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Etat'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														style="font-weight: bold;" th:text="${noteArchive.etat}"></td>
+												</tr>
+												
+												<!-- Partie FraisVehiculeDeTransport -->
+												<tr>
+													<td th:text="'Date de déplacement'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.dateDeplacement}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Lieu de départ'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.LieuDepart}"></td>
+												</tr>
+												<tr>
+													<td th:text="'Lieu d\'arrivée'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.LieuArrive}"></td>
+												</tr>
+
+												<!-- Partie FraisTaxi -->
+												<tr>
+													<td th:text="'Montant'"></td>
+													<td th:text="':'"></td>
+													<td class="text-center text-primary"
+														th:text="${noteArchive.montant}"></td>
+												</tr>
+
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="panel-group col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-1 col-md-10">
+							    <div class="panel panel-default">
+							      <div class="panel-heading">
+							        <h4 class="panel-title">
+							          <a data-toggle="collapse" th:href="'#justifArchive'+${noteArchive.id}" >Justificatif</a>
+							        </h4>
+							      </div>
+							      <div th:id="'justifArchive'+${noteArchive.id}" class="panel-collapse collapse">
+							        <div class="panel-body" style="overflow-y: scroll; height: 300px">
+							        	<div  class="col-xs-12 col-sm-12 col-md-12">
+											<img class="img-responsive" th:src="@{../getJustif(id=${noteArchive.id})}" />
+										</div>
+							        </div>
+							      </div>
+							    </div>
+							  </div>
+						</div>
+
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<!-- Fin Modal notesArchive -->
+	</div>
+	<!-- Fin Archive Note De Frais Admin /Salarie-->
+	
+</body>
+</html>

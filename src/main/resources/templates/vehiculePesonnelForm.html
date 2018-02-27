@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"/>
+<title>Nouvelle note</title>
+<link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
+<link rel="stylesheet" type="text/css" href="../static/css/custom/myHomeStyle.css" th:href="@{/css/custom/myHomeStyle.css}" />
+<style type="text/css">
+	.popover_aide{
+	}
+@media (min-width: 1536px) { 
+	.content_min_height{
+		min-height: 622px;
+	}
+}
+
+@media (min-width: 1922px) { 
+	.content_min_height{
+		min-height: 837px;
+	}
+}
+</style>
+</head>
+<body>
+	
+	<!-- Debut Menu -->
+	<div th:if="${session.agent.isEmploye()}">
+		<div th:replace="fragments/salarieMenu :: default-homeheader (${session.agent.getLogin()})"></div>
+	</div>
+	
+	<div th:unless="${session.agent.isEmploye()}">
+		<div th:replace="fragments/adminMenu :: default-homeheader (${session.agent.getLogin()})"></div>
+	</div>
+	<!-- Fin Menu -->
+	
+	<!-- Debut Contenu -->
+	<div class="container-fluid content_min_height">
+		
+		<!-- Debut Déjeuner d'affaires -->
+		<div
+			class="container col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4 spacer" style="margin-top: 10px;">
+			
+				<div class="panel panel-default"
+				style="box-shadow: 1px 2px 50px rgba(0, 0, 0, 0.1);">
+				<div class="panel-heading text-center">
+					<label class="control-label">Ajout d'une nouvelle note
+						Transport</label>
+				</div>
+				<div class="panel-body">
+					<form th:action="@{SaveNouvelNoteFraisVehiculePersonnel}" th:method="post"
+						th:object="${noteVehicule}" enctype="multipart/form-data">
+						<div class="clearfix"></div>
+						<div class="form-group">
+							<label class="control-label">Carte grise </label> 
+							<br/>
+							<label class="control-label col-xs-12 col-sm-offset-3 col-sm-6 col-md-offset-3 col-md-6 text-center">
+								<input
+								type="checkbox" th:field="*{carteGrise}" class="checkbox" style="margin-right: 10px; display: inline;" th:required="required"/>Fournie
+							</label>
+								<span class="text-danger" th:errors="*{carteGrise}"> </span><!--  -->
+						</div>
+						<div class="clearfix"></div>
+						<div class="form-group">
+							<label class="control-label">Type de moteur </label> 
+							<select
+								class="form-control" th:field="*{type}" th:required="required">
+								<option value="DIESEL">DIESEL</option>
+								<option value="ESSENCE">ESSENCE</option>
+							</select> <span
+								class="text-danger" th:errors="*{type}"></span>
+						</div>		
+						<div class="form-group">
+							<label class="control-label">Date de déplacement </label> <input
+								type="date" th:field="*{dateDeplacement}" class="form-control" th:required="required"/>
+							<span class="text-danger" th:errors="*{dateDeplacement}"></span>
+						</div>
+						<div class="form-group">
+							<label class="control-label">Départ </label> <input
+								type="text" th:field="*{LieuDepart}" class="form-control" th:required="required"/>
+							<span class="text-danger" th:errors="*{LieuDepart}"></span>
+						</div>
+						<div class="form-group">
+							<label class="control-label">Arrivée </label> <input
+								type="text" th:field="*{LieuArrive}" class="form-control" th:required="required"/>
+							<span class="text-danger" th:errors="*{LieuArrive}"></span>
+						</div>
+						<div class="form-group">
+							<label class="control-label">Client(s) et/ou Entreprise(s) 
+							<a class="popover_aide" href="#" title="Aides" data-toggle="popover" data-trigger="hover" data-content="Saisir les clients comme ça : client1:typeClient1,client2:typeClient2,... avec typeclient = PERSONNE ou ENTREPRISE">
+							<i class="glyphicon glyphicon-cog"></i></a>
+							</label> <input
+								type="text" name="clients" class="form-control" th:required="required"/>
+						</div>
+						<div class="form-group">
+							<label class="control-label">Puissance Fiscale </label> <input
+								type="text" th:field="*{puissanceFiscal}" class="form-control" th:required="required"/>
+							<span class="text-danger" th:errors="*{puissanceFiscal}"></span>
+						</div>
+						<div class="form-group">
+							<label class="control-label">Distance parcourue </label> <input
+								type="text" th:field="*{nbreKilometrage}"
+								class="form-control" th:required="required"/> <span class="text-danger"
+								th:errors="*{nbreKilometrage}"></span>
+						</div>
+						<div class="form-group">
+							<label class="control-label">Carburant consommé </label> <input
+								type="text" th:field="*{carburantBrule}"
+								class="form-control" th:required="required"/> <span class="text-danger"
+								th:errors="*{carburantBrule}"></span>
+						</div>
+						<div class="form-group">
+							<label class="control-label">Prix en €/L </label> <input
+								type="text" th:field="*{prixLitre}"
+								class="form-control" th:required="required"/> <span class="text-danger"
+								th:errors="*{prixLitre}"></span>
+						</div>
+						<div class="form-group">
+							<label class="control-label">Justificatif: </label>
+							<input type="file" name="justif" class="form-control" th:required="required"/>
+							<!-- <span class="text-danger" th:errors="*{justif}"></span> -->
+						</div>
+						<div class="form-group text-center">
+							<button type="submit" class="btn btn-default">Créer la note</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			
+		</div>
+		
+	</div>
+	<!-- Fin Contenu -->
+	
+	<div class="clearfix"></div>
+	
+	<!-- Debut footer -->
+	<div th:replace="fragments/headerFooter :: common-footer"></div>
+	<!-- Fin footer -->
+	
+	<!-- jQuery 1.12.4 -->
+    <script src="../static/js/custom/jquery.min.js" th:src="@{/js/custom/jquery.min.js}"></script>
+    <script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+    	// event aides
+    	$(".popover_aide").click(function(){
+    		e.preventDefault();
+    	});
+    	$('[data-toggle="popover"]').popover();
+    });
+    </script>
+    
+</body>
+</html>

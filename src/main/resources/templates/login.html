@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"/>
+<title>Connexion</title>
+<link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
+<link rel="stylesheet" type="text/css" href="../static/css/custom/myLoginStyle.css" th:href="@{/css/custom/myLoginStyle.css}" />
+<style type="text/css">
+@media (min-width: 1536px) { 
+	.content_min_height{
+		min-height: 622px;
+	}
+}
+
+@media (min-width: 1922px) { 
+	.content_min_height{
+		min-height: 837px;
+	}
+}
+
+</style>
+</head>
+<body>
+
+	<!-- Debut header -->
+	<div th:replace="fragments/headerFooter :: login-header"></div>
+	<!-- Fin header -->
+	
+	<!-- Debut Contenu -->
+	<div class="container-fluid content_min_height">
+		<!-- Debut Login Form -->
+		<div th:replace="fragments/loginForm :: loginForm"></div>
+		<!-- Fin Login Form -->
+	</div>
+	
+	<div class="clearfix"></div>
+	
+	<!-- Debut footer -->
+	<div th:replace="fragments/headerFooter :: common-footer"></div>
+	<!-- Fin footer -->
+	
+</body>
+</html>

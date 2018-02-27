@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"/>
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
+<link rel="stylesheet" type="text/css" href="../static/css/custom/myHomeStyle.css" th:href="@{/css/custom/myHomeStyle.css}" />
+<style type="text/css">
+@media (min-width: 1536px) { 
+	.content_min_height{
+		min-height: 622px;
+	}
+}
+
+@media (min-width: 1922px) { 
+	.content_min_height{
+		min-height: 837px;
+	}
+}
+
+</style>
+</head>
+<body>
+	
+	<!-- Debut Menu -->
+	<div th:if="${session.agent.isEmploye()}">
+		<div th:replace="fragments/salarieMenu :: default-homeheader (${session.agent.getLogin()})"></div>
+	</div>
+	
+	<div th:unless="${session.agent.isEmploye()}">
+		<div th:replace="fragments/adminMenu :: default-homeheader (${session.agent.getLogin()})"></div>
+	</div>
+	<!-- Fin Menu -->
+	
+	<!-- Debut Contenu -->
+	<div class="container-fluid content_min_height" th:object="${salarie}">
+		<div class="col-xs-12 col-sm-5 col-md-5 col-lg-4">
+			<p>Bonjour <span class="text-danger" th:text="*{nom + ' ' + prenom}"></span>, bienvenue dans votre espace personnel!</p>
+		</div>
+		
+		<div class="clearfix"></div>
+		
+		<!-- Debut Informations Salarie -->
+		<div th:replace="fragments/contenu :: personalData (${salarie})"></div>
+		<!-- Fin Informations Salarie -->
+		
+		<!-- Debut Espace Salarie -->
+		<div th:replace="fragments/contenu :: archiveNotesData (${notesArchive})"></div>
+		<div class="clearfix visible-sm-block"></div>
+		<div th:if="${session.agent.fonction == T(com.ingetis.ikheiry.model.enumeartion.TypeSalarie).RH}">
+			<div th:replace="fragments/contenu :: notesEncoursDataAdmin (${notesPasEncoreValide})"></div>
+		</div>
+		<div th:if="${session.agent.fonction == T(com.ingetis.ikheiry.model.enumeartion.TypeSalarie).EMPLOYE}">
+			<div th:replace="fragments/contenu :: notesEncoursData (${notesPasEncoreValide})"></div>
+		</div>
+		
+		
+		<div class="col-xs-12 col-sm-6 col-md-8 col-lg-8 text-center" th:if="${session.agent.fonction == T(com.ingetis.ikheiry.model.enumeartion.TypeSalarie).EMPLOYE}">
+			<div class="panel panel-default" style="box-shadow: 1px 2px 50px rgba(0, 0, 0, 0.05);">
+				<div class="table-responsive">
+					<table class="table table-striped">
+						<thead class="panel-heading">
+							<tr>
+								<th class="text-center">Menu personnel</th>
+							</tr>
+						</thead>
+						<tbody class="panel-body" th:object="${salarie}">
+							<tr>
+								<td class="text-center">
+									<a class="btn btn-danger" style="margin: 5px;" href="#" th:href="@{/NouvelNoteHebergement}" >Nouvelle note <img src="../static/img/hotel.png" th:src="@{/img/hotel.png}"/> </a>
+									<div class="visible-xs"><br/></div> 
+									<a class="btn btn-danger" style="margin: 5px;" href="#" th:href="@{/NouvelNoteRestaurant}">Nouvelle Note <img src="../static/img/restaurant.png" th:src="@{/img/restaurant.png}"/> </a>
+									<div class="visible-xs"><br/></div>
+									<a class="btn btn-danger" style="margin: 5px;" href="#" th:href="@{/NouvelNoteFraisVehiculePersonnel}">Nouvelle Note <img src="../static/img/car.png" th:src="@{/img/car.png}"/> </a>
+									<a class="btn btn-danger" style="margin: 5px;" href="#" th:href="@{/NouvelNoteTaxi}">Nouvelle Note <img src="../static/img/taxi.png" th:src="@{/img/taxi.png}"/> </a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- Fin Espace Salarie -->
+		
+	</div>
+	<!-- Fin Contenu -->
+	
+	<div class="clearfix"></div>
+	
+	<!-- Debut footer -->
+	<div th:replace="fragments/headerFooter :: common-footer"></div>
+	<!-- Fin footer -->
+	
+	<!-- jQuery 1.12.4 -->
+    <script src="../static/js/custom/jquery.min.js" th:src="@{/js/custom/jquery.min.js}"></script>
+    <script src="../static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+    
+</body>
+</html>

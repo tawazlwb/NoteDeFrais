@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"/>
+<link rel="stylesheet" type="text/css" href="../../static/css/bootstrap.min.css"/>
+<link rel="stylesheet" type="text/css" href="../../static/css/custom/myAddSalarieStyle.css"/>
+</head>
+<body>
+	
+	<!-- Debut Enregistrement Salarie -->
+	<div class="container col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4 spacer" th:fragment="addSalarieForm">
+		<div class="panel panel-default" style="box-shadow: 1px 2px 50px rgba(0, 0, 0, 0.1);">
+		<div class="panel-heading text-center">
+			<label class="control-label">Ajout d'un nouveau Salarié</label>
+		</div>
+			<div class="panel-body">
+				<form th:action="@{SaveSalarie}" th:method="post" th:object="${s}">
+					<div class="form-group">
+						<label class="control-label">Nom </label>
+						<input type="text" th:field="*{nom}" class="form-control"/>
+						<span class="text-danger" th:errors="*{nom}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Prenom </label>
+						<input type="text" th:field="*{prenom}" class="form-control"/>
+						<span class="text-danger" th:errors="*{prenom}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Sexe </label>
+						<br/>
+						<label class="radio-inline col-xs-4 col-xs-offset-2 col-sm-3 col-sm-offset-3 col-md-3 col-md-offset-3 col-lg-3 col-lg-offset-3"><input type="radio" th:field="*{sexe}" value="MASCULIN"/>Masculin</label>
+						<label class="radio-inline col-xs-4 col-sm-3 col-md-3 col-lg-3"><input type="radio" th:field="*{sexe}" value="FEMININ"/>Feminin</label>
+						<br/>
+						<span class="text-danger" th:errors="*{sexe}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Date de naissance </label>
+						<input type="date" th:field="*{dateNaissance}" class="form-control"/>
+						<span class="text-danger" th:errors="*{dateNaissance}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Adresse </label>
+						<input type="text" th:field="*{adresse}" class="form-control"/>
+						<span class="text-danger" th:errors="*{adresse}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Numéro de téléphone</label>
+						<input type="text" th:field="*{numeroTel}" class="form-control"/>
+						<span class="text-danger" th:errors="*{numeroTel}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Poste </label>
+						<input type="text" th:field="*{poste}" class="form-control"/>
+						<span class="text-danger" th:errors="*{poste}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Salaire </label>
+						<input type="text" th:field="*{salaire}" class="form-control"/>
+						<span class="text-danger" th:errors="*{salaire}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Numéro de sécurité sociale </label>
+						<input type="text" th:field="*{numeroSecuriteSociale}" class="form-control"/>
+						<span class="text-danger" th:errors="*{numeroSecuriteSociale}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Login </label>
+						<input type="text" th:field="*{login}" class="form-control"/>
+						<span class="text-danger" th:errors="*{login}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Mot de passe </label>
+						<input type="password" th:field="*{motDePasse}" class="form-control"/>
+						<span class="text-danger" th:errors="*{motDePasse}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">privilège du Salarié </label>
+						<select class="form-control" th:field="*{type}">
+					      	<option value="EMPLOYE">EMPLOYE</option>
+					      	<option value="RH">RH</option>
+					    </select>
+					    <span class="text-danger" th:errors="*{type}"></span>
+					</div>
+					<div class="form-group text-center">
+						<button type="submit" class="btn btn-default">Enregistrer</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- Fin Enregistrement Salarie -->
+	
+	<!-- Debut Update Salarie -->
+	<div class="container col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4 spacer" th:fragment="updateSalarieForm">
+		<div class="panel panel-default" style="box-shadow: 1px 2px 50px rgba(0, 0, 0, 0.1);">
+		<div class="panel-heading text-center">
+			<label class="control-label">Editer Salarié</label>
+		</div>
+			<div class="panel-body">
+				<form th:action="@{UpdateSalarie}" th:method="post" th:object="${salarie}">
+					<div class="form-group">
+						<label class="control-label">Nom </label>
+						<input type="text" th:field="*{nom}" class="form-control"/>
+						<span class="text-danger" th:errors="*{nom}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Prenom </label>
+						<input type="text" th:field="*{prenom}" class="form-control"/>
+						<span class="text-danger" th:errors="*{prenom}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Sexe </label>
+						<br/>
+						<label class="radio-inline col-xs-4 col-xs-offset-2 col-sm-3 col-sm-offset-3 col-md-3 col-md-offset-3 col-lg-3 col-lg-offset-3"><input type="radio" th:field="*{sexe}" value="MASCULIN"/>Masculin</label>
+						<label class="radio-inline col-xs-4 col-sm-3 col-md-3 col-lg-3"><input type="radio" th:field="*{sexe}" value="FEMININ"/>Feminin</label>
+						<br/>
+						<span class="text-danger" th:errors="*{sexe}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Date de naissance </label>
+						<input type="hidden" th:field="*{dateEmbauche}"/>
+						<input type="date" th:field="*{dateNaissance}" class="form-control"/>
+						<span class="text-danger" th:errors="*{dateNaissance}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Adresse </label>
+						<input type="text" th:field="*{adresse}" class="form-control"/>
+						<span class="text-danger" th:errors="*{adresse}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Numéro de téléphone</label>
+						<input type="text" th:field="*{numeroTel}" class="form-control"/>
+						<span class="text-danger" th:errors="*{numeroTel}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Poste </label>
+						<input type="text" th:field="*{poste}" class="form-control"/>
+						<span class="text-danger" th:errors="*{poste}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Salaire </label>
+						<input type="text" th:field="*{salaire}" class="form-control"/>
+						<span class="text-danger" th:errors="*{salaire}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Numéro de sécurité sociale </label>
+						<input type="text" th:field="*{numeroSecuriteSociale}" class="form-control"/>
+						<span class="text-danger" th:errors="*{numeroSecuriteSociale}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Login </label>
+						<input type="hidden" th:field="*{id}"/>
+						<input type="text" th:field="*{login}" class="form-control"/>
+						<span class="text-danger" th:errors="*{login}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">Mot de passe </label>
+						<input type="hidden" th:field="*{motDePasse}"/>
+						<input type="password" name="mot" class="form-control"/>
+						<span class="text-danger" th:errors="*{motDePasse}"></span>
+					</div>
+					<div class="form-group">
+						<label class="control-label">privilège du Salarié </label>
+						<select class="form-control" th:field="*{type}">
+					      	<option value="EMPLOYE">EMPLOYE</option>
+					      	<option value="RH">RH</option>
+					    </select>
+					    <span class="text-danger" th:errors="*{type}"></span>
+					</div>
+					<div class="form-group text-center">
+						<button type="submit" class="btn btn-default">Enregistrer</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- Fin Update Salarie -->
+	
+</body>
+</html>
